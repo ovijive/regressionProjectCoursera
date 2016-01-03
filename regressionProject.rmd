@@ -1,0 +1,55 @@
+---
+title: "Regression Models Course Project"
+author: "OvieEmiri"
+date: "January 3, 2016"
+output: html_document
+---
+
+load mtcars dataset
+```{r}
+data("mtcars")
+```
+
+visualise part of mtcars
+
+```{r}
+head(mtcars)
+```
+
+boxplot to get distingusion for both transmission category
+```{r}
+boxplot(mpg ~ am, data = mtcars, ylim = c(0, 40),
+        col = "thistle4", whisklty =1, boxwex = 0.5, staplelty = 0,
+        xlab = "Transmission Category(0 = automatic, 1 = manual)",
+        ylab = "Miles per Gallon", main = "MpG vs Transmission Category")
+```
+
+#Fit/Model Selection
+```{r}
+model <- lm(mpg ~ factor(am), data = mtcars)
+coef(summary(model))
+```
+R^2 of 0.3598 show our model is only 35.9% explained by the regression variance in our model
+Analyse other variable in the model using multiple linear regression
+
+fit multi linear model to analyse using other variable, this we do using anova
+```{r}
+testing <- aov(mpg ~ ., data = mtcars)
+summary(testing)
+```
+shows that variables: cyl, disp and wt would help fit our new model as indicated by their respective p-values. we now fit a model includin these variables
+
+```{r}
+model1 <- lm(mpg ~ factor(am) + disp + cyl + wt, data = mtcars); summary(model1)
+model2 <- lm(mpg ~ factor(am) + cyl + wt, data = mtcars); summary(model2)
+```
+83.0% of variability is explained by the new model as compared to the previous of 35.9%
+
+#Plotting the model
+```{r}
+par(mfrow = c(2, 2))
+plot(model2)
+```
+
+#Conclusion
+  manual transmission cars have about 1.7 mpg more than automatic transmission cars, mgp decreses with the number of cylinders: about 1.5, mpg decreases by about 3.1 for every 1000 pound increase in weight
